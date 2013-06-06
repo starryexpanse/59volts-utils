@@ -1,0 +1,14 @@
+{
+    "API Username": "example.com",
+    "API Key": "ABC123XYZ",
+    "Hosts": [
+       "my.example.com",
+       "examplers.com",
+       "server1.example.com"
+     ],
+    "IP Echo Sources": [
+        {
+            "url": "http://ifconfig.me/ip"
+        }
+    ]
+}
