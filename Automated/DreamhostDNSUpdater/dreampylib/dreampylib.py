@@ -5,9 +5,18 @@
 # UUID is needed to generate a nice random uuid for dreamhost
 import uuid
 import urllib, urllib2
+import subprocess
 
-DEBUG = False
 defaultReturnType = 'dict'
+
+def curlConnection(url, params):
+    params = urllib.urlencode(params)
+    proc = subprocess.Popen(['curl', '--ciphers', 'RSA', '--data', params, url], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+    output = ""
+    while proc.returncode is None:
+        out, err = proc.communicate()
+        output += out
+    return output
 
 class _RemoteCommand(object):
     # some magic to catch arbitrary maybe non-existent func. calls
@@ -70,15 +79,16 @@ class _RemoteCommand(object):
             
             if DEBUG:
                 print request
+                print "URL:", self._url
                 
-            self._connection = urllib2.urlopen(self._url, urllib.urlencode(request))
+            self._connection = curlConnection(self._url, request)
             return self._ParseResult(returnType or defaultReturnType)
         else:
             return []
         
     def _ParseResult(self, returnType):
         '''Parse the result of the request'''
-        lines = [l.strip() for l in self._connection.readlines()]
+        lines = [l.strip() for l in self._connection.split('\n')]
         
         self._status = lines[0]
         

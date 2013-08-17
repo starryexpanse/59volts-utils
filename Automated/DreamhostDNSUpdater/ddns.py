@@ -5,7 +5,7 @@ import os
 import re
 import sys
 import urllib2
-from dreampylib import DreampyLib
+from dreampylib.dreampylib  import DreampyLib
 import subprocess
 
 CONF_PATH = '/etc/dreamhostdns.conf'
@@ -58,9 +58,9 @@ def main():
 
     for host in HOSTS:
         for record in conn.dns.list_records():
-            if not (record['record'] == host and record['type'] == 'A'):
+            if not (record.get('record') == host and record.get('type') == 'A'):
                 continue
-            if record['value'] == IP:
+            if record.get('value') == IP:
                 if __debug__:
                     print "Old record for %(record)s found with IP %(value)s, no update needed." % record
                 continue
@@ -88,7 +88,7 @@ def main():
             if not status == 'success':
                 print "Warning: New record NOT added for %s. (Status=%s)" % (host, status)
             elif __debug__:
-                print "Notice: Successfully added new record." % host
+                print "Notice: Successfully added new record. (%s)" % host
 
 dns_records = None
 def getRecords(ip, conn, hostname):
