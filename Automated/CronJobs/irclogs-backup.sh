@@ -24,7 +24,7 @@ if [[ $? = 0 ]]; then
     chown "$OWNER":"$GROUP" "$ab_loc".tgz
 else
     echo 'Tar failed! (exit code '"$?"'). Out of disk space?'
-    chown "$OWNER":"$GROUP" "$ab_loc".tgz
+    chown "$OWNER":"$GROUP" "$ab_loc".sql
 fi
 
 stem="$(pwd)/$PREFIX"
