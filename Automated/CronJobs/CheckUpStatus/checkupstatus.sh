@@ -34,7 +34,11 @@ function main {
         success=1
     fi
 
-    if [[ $success -eq 0 ]]; then
+    ###
+
+    if [[ $success ]]; then
+        echo 0 > "$file"
+    else
         new_saved_num=$(($saved_num+1))
         echo "$new_saved_num" > "$file"
 
