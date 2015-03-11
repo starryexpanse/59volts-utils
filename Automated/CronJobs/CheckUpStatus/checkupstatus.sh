@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # Usage:
-# checkupstatus DOMAIN N EMAILADDR [EMAILADDR]...
+# checkupstatus DOMAIN PORT N SERVICE_NAME EMAILADDR [EMAILADDR]...
 #
 # Poor man's uptime monitoring
 # We send an email if after N checks, the specified 
@@ -9,18 +9,16 @@
 
 function main {
     local domain="$1"
-    local n="$2"
-    local emails=${@:3}
+    local port="$2"
+    local n="$3"
+    local service="$4"
+    local emails=${@:5}
 
-    local headers="$(curl -s -S --connect-timeout 10 -I -- "http://$domain")"
+    netcat -w 10 -z "$domain" "$port"
     local status=$?
-    local response="$(echo "$headers" | grep '^HTTP/')"
-    local response_family="$(echo "$response" | cut -c 10)"
-
-    local success=0
 
     local datadir="/var/checkupstatus"
-    local file="$datadir/$domain"
+    local file="$datadir/$domain:$port"
 
     if [[ ! -f "$file" ]]; then
         echo 0 > "$file"
@@ -30,21 +28,17 @@ function main {
     local new_saved_num=saved_num
 
 
-    if [[ $status -eq 0 && ($response_family -eq 3 || $response_family -eq 2) ]]; then
-        success=1
-    fi
-
-    ###
-
-    if [[ $success ]]; then
+    if [[ $status -eq 0  ]]; then
+        # Host is up!
         echo 0 > "$file"
     else
+        # Host seems to be down...
         new_saved_num=$(($saved_num+1))
         echo "$new_saved_num" > "$file"
 
         if [[ $new_saved_num -ge $n ]]; then
             for email in $emails; do
-                php -r '$domain=$argv[1];$email=$argv[2];mail($email, "$domain is down", "$domain is replying to my HTTP request with:\n\n$argv[3]\n\nSorry :(\n\n-checkupstatus script");' "$domain" "$email" "$headers"
+                php -r '$domain=$argv[1];$email=$argv[2];$port=$argv[3];$service=$argv[4];mail($email, "$domain is down", "Service \"$service\" seems to be down; I could not reach $domain on port $port.\n\nSorry :(\n\n-checkupstatus script");' "$domain" "$email" "$port" "$service"
             done
         fi
 
