@@ -65,8 +65,8 @@ def cleanOld(pattern):
 
     for year in sorted(organized.keys())[:-1]:
         maxmonth = max(organized[year].keys())
-        maxday = max(organized[year][maxmonth].keys())
-        for month in organized[year]:
+        maxday = max(organized[year][maxmonth])
+        for month in organized[year].values():
             for f in month:
                 if not (f.month == maxmonth and f.day == maxday):
                     filesToDelete.add(f)
