@@ -12,7 +12,7 @@ function main {
     local n="$2"
     local emails=${@:3}
 
-    local headers="$(curl --connect-timeout 10 -I "http://$domain" 2>/dev/null)"
+    local headers="$(curl -s -S --connect-timeout 10 -I -- "http://$domain")"
     local status=$?
     local response="$(echo "$headers" | grep '^HTTP/')"
     local response_family="$(echo "$response" | cut -c 10)"
