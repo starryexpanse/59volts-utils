@@ -44,6 +44,7 @@ def cleanOld(pattern):
         thedate = fname.rsplit('/')[-1].split('.')[0][-8:]
         if not DATE_REGEX.match(thedate):
             sys.stderr.write("Skipping file %s" % fname)
+            continue
         year = int(thedate[0:4])
         month = int(thedate[4:6])
         day = int(thedate[6:8])
