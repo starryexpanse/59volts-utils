@@ -7,6 +7,8 @@ import uuid
 import urllib, urllib2
 import subprocess
 
+DEBUG = False
+
 defaultReturnType = 'dict'
 
 def curlConnection(url, params):
