@@ -31,9 +31,7 @@ yearly backups for files older than a year.
 
 Note that when we say "the last year", it doesn't really mean
 the last 365 days. When the new year rolls around, all the last
-year's backups will be deleted, except for the latest one. This 
-actually does not sound ideal, now that I think of it, but I've
-already written it this way. Ah well."""
+year's backups will be deleted, except for the latest one."""
 def cleanOld(pattern):
     directory = os.path.dirname(pattern)
     files = glob(pattern)
